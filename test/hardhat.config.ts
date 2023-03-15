@@ -9,7 +9,7 @@ const config: HardhatUserConfig = {
   networks: {
     hardhat: {
       forking: {
-        url: "https://eth.llamarpc.com",
+        url: "https://rpc.ankr.com/eth",
       },
     },
   },
