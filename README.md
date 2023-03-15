@@ -1,58 +1,57 @@
-# Hardhat TypeScript plugin boilerplate
+# hardhat-deal
 
-This is a sample Hardhat plugin written in TypeScript. Creating a Hardhat plugin
-can be as easy as extracting a part of your config into a different file and
-publishing it to npm.
+This plugin allows the developer to deal arbitrary amount of ERC20 tokens to any account on the hardhat network, to ease test development. The storage value of the mapping `balanceOf` is manipulated in order to manipulate the balance of the given user.
 
-This sample project contains an example on how to do that, but also comes with
-many more features:
-
-- A mocha test suite ready to use
-- TravisCI already setup
-- A package.json with scripts and publishing info
-- Examples on how to do different things
+The plugin is shipped with a list of storage slots, which enable faster deals. Additionnally, the developer can provide a mapping of storage slots on custom ERC20s or edit the hardhat configuration on-the-fly (for example when deploying custom ERC20s during tests). If the ERC20 is not found in the configuration, the plugin automatically tries to brute-force the storage slot of the mapping `balanceOf`, and throws an error if it cannot.
 
 ## Installation
 
-To start working on your project, just run
-
 ```bash
-npm install
+npm install hardhat-deal
 ```
 
-## Plugin development
+```bash
+yarn add hardhat-deal
+```
 
-Make sure to read our [Plugin Development Guide](https://hardhat.org/advanced/building-plugins.html) to learn how to build a plugin.
+Import the plugin in your `hardhat.config.js`:
 
-## Testing
+```js
+require("hardhat-deal");
+```
 
-Running `npm run test` will run every test located in the `test/` folder. They
-use [mocha](https://mochajs.org) and [chai](https://www.chaijs.com/),
-but you can customize them.
+Or if you are using TypeScript, in your `hardhat.config.ts`:
 
-We recommend creating unit tests for your own modules, and integration tests for
-the interaction of the plugin with Hardhat and its dependencies.
+```ts
+import "hardhat-deal";
+```
 
-## Linting and autoformat
+## Usage
 
-All of Hardhat projects use [prettier](https://prettier.io/) and
-[tslint](https://palantir.github.io/tslint/).
+```typescript
+import { deal } from "hardhat-deal";
 
-You can check if your code style is correct by running `npm run lint`, and fix
-it with `npm run lint:fix`.
+const lusd = "0x5f98805A4E8be255a32880FDeC7F6728C6568bA0";
+const user = "0x7Ef4174aFdF4514F556439fa2822212278151Db6";
+const amount = "10000000000000000000"; // 10 LUSD
 
-## Building the project
+// Deal 10 LUSD to the user
+await deal(lusd, user, amount);
 
-Just run `npm run build` ️👷
+// Optionnally provide a last parameter specifying how far to brute-force the storage slot (default: 12)
+await deal(lusd, user, amount, 15);
+```
 
-## README file
+## Configuration
 
-This README describes this boilerplate project, but won't be very useful to your
-plugin users.
+This plugin extends `HardhatUserConfig` object with an optional `dealSlots` field, allowing one to customize the default storage slots used to deal ERC20 tokens, for faster usage (because the plugin no longer needs to brute-force the ERC20 storage slot).
 
-Take a look at `README-TEMPLATE.md` for an example of what a Hardhat plugin's
-README should look like.
+This is an example of how to set it:
 
-## Migrating from Buidler?
-
-Take a look at [the migration guide](MIGRATION.md)!
+```js
+module.exports = {
+  dealSlots: {
+    "0x5f98805A4E8be255a32880FDeC7F6728C6568bA0": 2, // LUSD
+  },
+};
+```

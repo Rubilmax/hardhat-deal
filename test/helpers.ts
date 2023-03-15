@@ -8,9 +8,9 @@ declare module "mocha" {
   }
 }
 
-export function useEnvironment(fixtureProjectName: string) {
+export function useEnvironment() {
   beforeEach("Loading hardhat environment", function () {
-    process.chdir(path.join(__dirname, "fixture-projects", fixtureProjectName));
+    process.chdir(path.join(__dirname));
 
     this.hre = require("hardhat");
   });

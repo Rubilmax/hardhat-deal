@@ -1,18 +1,19 @@
 {
   "compilerOptions": {
-    "target": "ES2017",
+    "target": "esnext",
     "module": "commonjs",
     "declaration": true,
     "declarationMap": true,
     "sourceMap": true,
-    "outDir": "./dist",
+    "outDir": "dist",
+    "rootDir": ".",
+    "baseUrl": ".",
+    "moduleResolution": "nodenext",
     "strict": true,
-    "rootDirs": ["./src", "./test"],
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true
   },
-  "exclude": ["dist", "node_modules"],
-  "include": [
-    "./test",
-    "./src"
-  ]
+  "include": ["src", "test"]
 }
