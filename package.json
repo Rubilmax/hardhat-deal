@@ -13,7 +13,6 @@
     "url": "https://github.com/rubilmax"
   },
   "main": "dist/index.js",
-  "types": "dist/index.d.ts",
   "files": [
     "dist/*"
   ],
@@ -71,7 +70,7 @@
   },
   "release": {
     "branches": [
-      "main",
+      "master",
       "next"
     ],
     "plugins": [
