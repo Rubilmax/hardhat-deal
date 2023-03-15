@@ -7,12 +7,6 @@ on:
       - test/**
       - package.json
       - yarn.lock
-  workflow_call:
-    secrets:
-      WS_RPC_URL:
-        required: true
-      HTTP_RPC_URL:
-        required: true
 
 jobs:
   jest:
@@ -38,6 +32,3 @@ jobs:
 
       - name: Run Jest test suite
         run: yarn test
-        env:
-          WS_RPC_URL: ${{ secrets.WS_RPC_URL }}
-          HTTP_RPC_URL: ${{ secrets.HTTP_RPC_URL }}
