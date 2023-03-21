@@ -1,5 +1,12 @@
 # hardhat-deal
 
+[![npm package][npm-img]][npm-url]
+[![Build Status][build-img]][build-url]
+[![Downloads][downloads-img]][downloads-url]
+[![Issues][issues-img]][issues-url]
+[![Commitizen Friendly][commitizen-img]][commitizen-url]
+[![Semantic Release][semantic-release-img]][semantic-release-url]
+
 This plugin allows the developer to deal arbitrary amount of ERC20 tokens to any account on the hardhat network, to ease test development. The storage value of the mapping `balanceOf` is manipulated in order to manipulate the balance of the given user.
 
 The plugin is shipped with a list of storage slots, which enable faster deals. Additionnally, the developer can provide a mapping of storage slots on custom ERC20s or edit the hardhat configuration on-the-fly (for example when deploying custom ERC20s during tests). If the ERC20 is not found in the configuration, the plugin automatically tries to brute-force the storage slot of the mapping `balanceOf`, and throws an error if it cannot.
@@ -55,3 +62,18 @@ module.exports = {
   },
 };
 ```
+
+[build-img]: https://github.com/rubilmax/hardhat-deal/actions/workflows/release.yml/badge.svg
+[build-url]: https://github.com/rubilmax/hardhat-deal/actions/workflows/release.yml
+[downloads-img]: https://img.shields.io/npm/dt/hardhat-deal
+[downloads-url]: https://www.npmtrends.com/hardhat-deal
+[npm-img]: https://img.shields.io/npm/v/hardhat-deal
+[npm-url]: https://www.npmjs.com/package/hardhat-deal
+[issues-img]: https://img.shields.io/github/issues/rubilmax/hardhat-deal
+[issues-url]: https://github.com/rubilmax/hardhat-deal/issues
+[codecov-img]: https://codecov.io/gh/rubilmax/hardhat-deal/branch/main/graph/badge.svg
+[codecov-url]: https://codecov.io/gh/rubilmax/hardhat-deal
+[semantic-release-img]: https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg
+[semantic-release-url]: https://github.com/semantic-release/semantic-release
+[commitizen-img]: https://img.shields.io/badge/commitizen-friendly-brightgreen.svg
+[commitizen-url]: http://commitizen.github.io/cz-cli/
