@@ -9,6 +9,8 @@ import {
 } from "ethers/lib/utils";
 import { HardhatRuntimeEnvironment } from "hardhat/types/runtime";
 
+import { getCachePath, saveCache } from "./cache";
+
 const balanceOfIfc = new Interface(["function balanceOf(address) external view returns (uint256)"]);
 
 export const deal = async (
@@ -67,4 +69,6 @@ export const deal = async (
     throw Error(`Could not brute-force storage slot for ERC20 at: ${erc20}`);
 
   hre.config.dealSlots[erc20] = balanceOfMappingSlot - 1; // Cache for later.
+
+  saveCache(getCachePath(hre.config.paths.cache), hre.config.dealSlots);
 };
