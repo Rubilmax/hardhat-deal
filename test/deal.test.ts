@@ -10,6 +10,7 @@ const usdc = "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48";
 const aave = "0x7fc66500c84a76ad7e9c93437bfc5ac33e2ddae9";
 const crv = "0xd533a949740bb3306d119cc777fa900ba034cd52";
 const cbETH = "0xBe9895146f7AF43049ca1c1AE358B0541Ea49704";
+const maDai = "0x36F8d0D0573ae92326827C4a82Fe4CE4C244cAb6";
 
 describe("Integration tests examples", function () {
   useEnvironment();
@@ -67,6 +68,20 @@ describe("Integration tests examples", function () {
       ).balanceOf(user),
       2,
       "balanceOf2"
+    );
+  });
+
+  it("Should deal maDAI", async function () {
+    await deal(maDai, user, 1);
+
+    assert.equal(
+      await new Contract(
+        maDai,
+        ["function balanceOf(address) external view returns (uint256)"],
+        this.hre.ethers.provider
+      ).balanceOf(user),
+      1,
+      "balanceOf"
     );
   });
 });

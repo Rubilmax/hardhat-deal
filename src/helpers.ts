@@ -17,7 +17,7 @@ export const deal = async (
   erc20: string,
   recipient: string,
   amount: BigNumberish,
-  maxSlot = 12
+  maxSlot = 256
 ) => {
   const hre: HardhatRuntimeEnvironment = require("hardhat");
 
