@@ -49,6 +49,16 @@ await deal(lusd, user, amount);
 await deal(lusd, user, amount, 15);
 ```
 
+Plugin also provides a task `deal` callable from hardhat:
+
+``` 
+npx hardhat deal --to <recepient addr> --symbol WETH --amount 1 [--nodec]
+```
+
+Add the `--nodec` flag to supply raw numbers without decimals applied
+
+Run `npx hardhat` to see list of tokens supported by task
+
 ## Configuration
 
 This plugin extends `HardhatUserConfig` object with an optional `dealSlots` field, allowing one to customize the default storage slots used to deal ERC20 tokens, for faster usage (because the plugin no longer needs to brute-force the ERC20 storage slot).

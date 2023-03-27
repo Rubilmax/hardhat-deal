@@ -13,3 +13,10 @@ declare module "hardhat/types/config" {
     };
   }
 }
+
+export interface Token {
+  symbol: string;
+  address: string;
+  decimals: number;
+  holder?: string;
+}
