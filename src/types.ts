@@ -18,5 +18,4 @@ export interface Token {
   symbol: string;
   address: string;
   decimals: number;
-  holder?: string;
 }
