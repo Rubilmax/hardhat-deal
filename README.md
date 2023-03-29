@@ -35,6 +35,8 @@ import "hardhat-deal";
 
 ## Usage
 
+### Testing
+
 ```typescript
 import { deal } from "hardhat-deal";
 
@@ -48,6 +50,22 @@ await deal(lusd, user, amount);
 // Optionnally provide a last parameter specifying how far to brute-force the storage slot (default: 12)
 await deal(lusd, user, amount, 15);
 ```
+
+### Standalone task
+
+This plugin also provides a task `deal` that can be called with hardhat to deal ERC20 tokens on a separate hardhat node:
+
+```bash
+npx hardhat deal <recipient> <ERC20 symbol or address> <amount> --network localhost
+```
+
+For example:
+
+```bash
+npx hardhat deal <recipient> WETH 2000000000000000000 --network localhost
+```
+
+Run `npx hardhat deal --help` to see the list of supported ERC20 symbols.
 
 ## Configuration
 
