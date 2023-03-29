@@ -2,9 +2,9 @@ import { extendConfig } from "hardhat/config";
 import { HardhatConfig, HardhatUserConfig } from "hardhat/types";
 
 import { getCachePath, loadCache } from "./cache";
-import defaultSlots from "./defaultSlots";
-import "./types";
+import { defaultSlots } from "./constants";
 import "./tasks";
+import "./types";
 
 export { deal } from "./helpers";
 

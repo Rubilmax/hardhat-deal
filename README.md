@@ -35,6 +35,8 @@ import "hardhat-deal";
 
 ## Usage
 
+### Testing
+
 ```typescript
 import { deal } from "hardhat-deal";
 
@@ -49,15 +51,21 @@ await deal(lusd, user, amount);
 await deal(lusd, user, amount, 15);
 ```
 
-Plugin also provides a task `deal` callable from hardhat:
+### Standalone task
 
-``` 
-npx hardhat deal --to <recepient addr> --symbol WETH --amount 1 [--nodec]
+This plugin also provides a task `deal` that can be called with hardhat to deal ERC20 tokens on a separate hardhat node:
+
+```bash
+npx hardhat deal <recipient> <ERC20 symbol or address> <amount> --network localhost
 ```
 
-Add the `--nodec` flag to supply raw numbers without decimals applied
+For example:
 
-Run `npx hardhat` to see list of tokens supported by task
+```bash
+npx hardhat deal <recipient> WETH 2000000000000000000 --network localhost
+```
+
+Run `npx hardhat deal --help` to see the list of supported ERC20 symbols.
 
 ## Configuration
 

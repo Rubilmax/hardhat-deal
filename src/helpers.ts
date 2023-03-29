@@ -17,9 +17,12 @@ export const deal = async (
   erc20: string,
   recipient: string,
   amount: BigNumberish,
-  maxSlot = 256
+  maxSlot = 256,
+  hre?: HardhatRuntimeEnvironment
 ) => {
-  const hre: HardhatRuntimeEnvironment = require("hardhat");
+  hre ??= require("hardhat");
+
+  if (!hre) throw Error("Could not instanciate Hardhat Runtime Environment");
 
   erc20 = erc20.toLowerCase();
   recipient = await getAddress(recipient);
