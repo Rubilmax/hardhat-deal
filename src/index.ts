@@ -4,6 +4,7 @@ import { HardhatConfig, HardhatUserConfig } from "hardhat/types";
 import { getCachePath, loadCache } from "./cache";
 import defaultSlots from "./defaultSlots";
 import "./types";
+import "./tasks";
 
 export { deal } from "./helpers";
 
