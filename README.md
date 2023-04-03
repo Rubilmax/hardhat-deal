@@ -75,6 +75,14 @@ This is an example of how to set it:
 
 ```js
 module.exports = {
+  networks: {
+    // If using an external network, you can optionnally provide a custom rpc endpoint to manipulate the network's storage.
+    tenderly: {
+      rpcEndpoints: {
+        setStorageAt: "tenderly_setStorageAt",
+      },
+    },
+  },
   dealSlots: {
     "0x5f98805A4E8be255a32880FDeC7F6728C6568bA0": 2, // LUSD
   },
