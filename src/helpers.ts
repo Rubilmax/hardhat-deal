@@ -42,7 +42,11 @@ export const deal = async (
       ? await hre.network.provider.send("eth_getStorageAt", [erc20, balanceOfSlot])
       : null;
 
-  await hre.network.provider.send("hardhat_setStorageAt", [erc20, balanceOfSlot, hexAmount]);
+  await hre.network.provider.send(hre.network.config.rpcEndpoints.setStorageAt, [
+    erc20,
+    balanceOfSlot,
+    hexAmount,
+  ]);
 
   if (!storageBefore) return;
 
@@ -56,13 +60,21 @@ export const deal = async (
   let balance = await hre.network.provider.send("eth_call", balanceOfCall);
 
   while (balance !== hexAmount && balanceOfMappingSlot <= maxSlot) {
-    await hre.network.provider.send("hardhat_setStorageAt", [erc20, balanceOfSlot, storageBefore]);
+    await hre.network.provider.send(hre.network.config.rpcEndpoints.setStorageAt, [
+      erc20,
+      balanceOfSlot,
+      storageBefore,
+    ]);
 
     balanceOfSlot = getBalanceOfSlot();
 
     storageBefore = await hre.network.provider.send("eth_getStorageAt", [erc20, balanceOfSlot]);
 
-    await hre.network.provider.send("hardhat_setStorageAt", [erc20, balanceOfSlot, hexAmount]);
+    await hre.network.provider.send(hre.network.config.rpcEndpoints.setStorageAt, [
+      erc20,
+      balanceOfSlot,
+      hexAmount,
+    ]);
 
     balance = await hre.network.provider.send("eth_call", balanceOfCall);
   }
