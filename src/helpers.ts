@@ -10,8 +10,20 @@ import {
 import { HardhatRuntimeEnvironment } from "hardhat/types/runtime";
 
 import { getCachePath, saveCache } from "./cache";
+import { StorageLayoutType } from "./types";
 
 const balanceOfIfc = new Interface(["function balanceOf(address) external view returns (uint256)"]);
+
+const getBalanceOfSlot = (type: StorageLayoutType, slot: number, recipient: string) => {
+  if (type === StorageLayoutType.VYPER)
+    return hexStripZeros(
+      keccak256(defaultAbiCoder.encode(["uint256", "address"], [slot, recipient]))
+    );
+
+  return hexStripZeros(
+    keccak256(defaultAbiCoder.encode(["address", "uint256"], [recipient, slot]))
+  );
+};
 
 export const deal = async (
   erc20: string,
@@ -27,29 +39,6 @@ export const deal = async (
   recipient = await getAddress(recipient);
   const hexAmount = hexZeroPad(BigNumber.from(amount).toHexString(), 32);
 
-  const dealSlot = hre.config.dealSlots[erc20];
-
-  let balanceOfMappingSlot = dealSlot ?? 0;
-  const getBalanceOfSlot = () =>
-    hexStripZeros(
-      keccak256(defaultAbiCoder.encode(["address", "uint256"], [recipient, balanceOfMappingSlot++]))
-    );
-
-  let balanceOfSlot = getBalanceOfSlot();
-
-  let storageBefore =
-    typeof dealSlot !== "number"
-      ? await hre.network.provider.send("eth_getStorageAt", [erc20, balanceOfSlot])
-      : null;
-
-  await hre.network.provider.send(hre.network.config.rpcEndpoints.setStorageAt, [
-    erc20,
-    balanceOfSlot,
-    hexAmount,
-  ]);
-
-  if (!storageBefore) return;
-
   const balanceOfCall = [
     {
       to: erc20,
@@ -57,32 +46,64 @@ export const deal = async (
     },
   ];
 
-  let balance = await hre.network.provider.send("eth_call", balanceOfCall);
+  const configDealSlot = hre.config.dealSlots[erc20];
+  const cached = configDealSlot != null;
 
-  while (balance !== hexAmount && balanceOfMappingSlot <= maxSlot) {
-    await hre.network.provider.send(hre.network.config.rpcEndpoints.setStorageAt, [
-      erc20,
-      balanceOfSlot,
-      storageBefore,
-    ]);
+  let dealSlot =
+    typeof configDealSlot === "object" && "type" in configDealSlot
+      ? { ...configDealSlot }
+      : { type: StorageLayoutType.SOLIDITY, slot: configDealSlot ?? 0 };
 
-    balanceOfSlot = getBalanceOfSlot();
+  const trySlot = async () => {
+    let balanceOfSlot = getBalanceOfSlot(dealSlot.type, dealSlot.slot, recipient);
 
-    storageBefore = await hre.network.provider.send("eth_getStorageAt", [erc20, balanceOfSlot]);
+    const storageBefore = !cached
+      ? await hre!.network.provider.send("eth_getStorageAt", [erc20, balanceOfSlot])
+      : null;
 
-    await hre.network.provider.send(hre.network.config.rpcEndpoints.setStorageAt, [
+    await hre!.network.provider.send(hre!.network.config.rpcEndpoints.setStorageAt, [
       erc20,
       balanceOfSlot,
       hexAmount,
     ]);
 
-    balance = await hre.network.provider.send("eth_call", balanceOfCall);
+    if (cached) return true;
+
+    const balance = await hre!.network.provider.send("eth_call", balanceOfCall);
+
+    if (balance === hexAmount) return true;
+
+    await hre!.network.provider.send(hre!.network.config.rpcEndpoints.setStorageAt, [
+      erc20,
+      balanceOfSlot,
+      storageBefore,
+    ]);
+
+    return false;
+  };
+
+  const getNextDealSlot = () => {
+    const { slot } = dealSlot;
+
+    if (dealSlot.type === StorageLayoutType.SOLIDITY)
+      return { type: StorageLayoutType.VYPER, slot };
+
+    return { type: StorageLayoutType.SOLIDITY, slot: slot + 1 };
+  };
+
+  let success = await trySlot();
+
+  while (!success && dealSlot.slot <= maxSlot) {
+    dealSlot = getNextDealSlot();
+
+    success = await trySlot();
   }
 
-  if (balance !== hexAmount)
-    throw Error(`Could not brute-force storage slot for ERC20 at: ${erc20}`);
+  if (!success) throw Error(`Could not brute-force storage slot for ERC20 at: ${erc20}`);
 
-  hre.config.dealSlots[erc20] = balanceOfMappingSlot - 1; // Cache for later.
+  if (cached) return;
+
+  hre.config.dealSlots[erc20] = dealSlot;
 
   saveCache(getCachePath(hre.config.paths.cache), hre.config.dealSlots);
 };

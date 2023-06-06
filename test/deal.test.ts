@@ -28,7 +28,6 @@ describe("Integration tests examples", function () {
     );
     assert.equal(this.hre.config.dealSlots[aave], 0, "AAVE");
     assert.equal(this.hre.config.dealSlots[usdc], 9, "USDC");
-    assert.equal(this.hre.config.dealSlots[crv], undefined, "CRV");
   });
 
   it("Should deal USDC", async function () {
@@ -77,6 +76,20 @@ describe("Integration tests examples", function () {
     assert.equal(
       await new Contract(
         maDai,
+        ["function balanceOf(address) external view returns (uint256)"],
+        this.hre.ethers.provider
+      ).balanceOf(user),
+      1,
+      "balanceOf"
+    );
+  });
+
+  it("Should deal CRV", async function () {
+    await deal(crv, user, 1);
+
+    assert.equal(
+      await new Contract(
+        crv,
         ["function balanceOf(address) external view returns (uint256)"],
         this.hre.ethers.provider
       ).balanceOf(user),

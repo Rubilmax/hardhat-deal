@@ -1,9 +1,21 @@
 import "hardhat/types/config";
 
+export enum StorageLayoutType {
+  SOLIDITY = "solidity",
+  VYPER = "vyper",
+}
+
+export type DealSlot =
+  | {
+      type: StorageLayoutType;
+      slot: number;
+    }
+  | number;
+
 declare module "hardhat/types/config" {
   export interface HardhatUserConfig {
     dealSlots?: {
-      [address: string]: number;
+      [address: string]: DealSlot;
     };
   }
 
@@ -15,7 +27,7 @@ declare module "hardhat/types/config" {
 
   export interface HardhatConfig {
     dealSlots: {
-      [address: string]: number | undefined;
+      [address: string]: DealSlot | undefined;
     };
   }
 

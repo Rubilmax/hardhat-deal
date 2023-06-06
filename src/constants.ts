@@ -10,6 +10,7 @@ export const defaultSymbols: {
   UNI: "0x1f9840a85d5af5bf1d1762f925bdaddc4201f984",
   AAVE: "0x7fc66500c84a76ad7e9c93437bfc5ac33e2ddae9",
   LINK: "0x514910771af9ca656af840dff83e8264ecf986ca",
+  CRV: "0xd533a949740bb3306d119cc777fa900ba034cd52",
 };
 
 export const defaultSlots: {
