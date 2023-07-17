@@ -1,28 +1,27 @@
-import { BigNumber, BigNumberish } from "ethers";
 import {
-  defaultAbiCoder,
-  getAddress,
-  hexStripZeros,
-  hexZeroPad,
+  BigNumberish,
   Interface,
+  getAddress,
+  toBeHex,
+  zeroPadValue,
+  AbiCoder,
   keccak256,
-} from "ethers/lib/utils";
+  stripZerosLeft,
+} from "ethers";
 import { HardhatRuntimeEnvironment } from "hardhat/types/runtime";
 
 import { getCachePath, saveCache } from "./cache";
 import { StorageLayoutType } from "./types";
 
+const abiCoder = AbiCoder.defaultAbiCoder();
+
 const balanceOfIfc = new Interface(["function balanceOf(address) external view returns (uint256)"]);
 
 const getBalanceOfSlot = (type: StorageLayoutType, slot: number, recipient: string) => {
   if (type === StorageLayoutType.VYPER)
-    return hexStripZeros(
-      keccak256(defaultAbiCoder.encode(["uint256", "address"], [slot, recipient]))
-    );
+    return stripZerosLeft(keccak256(abiCoder.encode(["uint256", "address"], [slot, recipient])));
 
-  return hexStripZeros(
-    keccak256(defaultAbiCoder.encode(["address", "uint256"], [recipient, slot]))
-  );
+  return stripZerosLeft(keccak256(abiCoder.encode(["address", "uint256"], [recipient, slot])));
 };
 
 export const deal = async (
@@ -36,8 +35,8 @@ export const deal = async (
   if (!hre) throw Error("Could not instanciate Hardhat Runtime Environment");
 
   erc20 = erc20.toLowerCase();
-  recipient = await getAddress(recipient);
-  const hexAmount = hexZeroPad(BigNumber.from(amount).toHexString(), 32);
+  recipient = getAddress(recipient);
+  const hexAmount = zeroPadValue(toBeHex(BigInt(amount)), 32);
 
   const balanceOfCall = [
     {
@@ -60,7 +59,6 @@ export const deal = async (
     const storageBefore = !cached
       ? await hre!.network.provider.send("eth_getStorageAt", [erc20, balanceOfSlot])
       : null;
-
     await hre!.network.provider.send(hre!.network.config.rpcEndpoints.setStorageAt, [
       erc20,
       balanceOfSlot,
