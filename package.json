@@ -1,6 +1,6 @@
 {
   "name": "hardhat-deal",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Hardhat TypeScript plugin boilerplate",
   "repository": {
     "type": "git",
