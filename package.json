@@ -1,7 +1,7 @@
 {
   "name": "hardhat-deal",
   "version": "2.0.0",
-  "description": "Hardhat TypeScript plugin boilerplate",
+  "description": "🎩🪄 Easily deal any amount of any ERC20 tokens to any account on the hardhat network",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/rubilmax/hardhat-deal.git"
