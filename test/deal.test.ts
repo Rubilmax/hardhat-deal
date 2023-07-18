@@ -1,5 +1,4 @@
 import { assert } from "chai";
-import { Contract } from "ethers";
 
 import { deal } from "../src/helpers";
 
@@ -33,68 +32,48 @@ describe("Integration tests examples", function () {
   it("Should deal USDC", async function () {
     await deal(usdc, user, 1);
 
-    assert.equal(
-      await new Contract(
-        usdc,
-        ["function balanceOf(address) external view returns (uint256)"],
-        this.hre.ethers.provider
-      ).balanceOf(user),
-      1,
-      "balanceOf"
+    const usdcContract = await this.hre.ethers.getContractAt(
+      ["function balanceOf(address) external view returns (uint256)"],
+      usdc
     );
+
+    assert.equal(await usdcContract.balanceOf(user), 1, "balanceOf");
   });
 
   it("Should deal cbETH & re-use cache", async function () {
     await deal(cbETH, user, 1);
 
-    assert.equal(
-      await new Contract(
-        cbETH,
-        ["function balanceOf(address) external view returns (uint256)"],
-        this.hre.ethers.provider
-      ).balanceOf(user),
-      1,
-      "balanceOf1"
+    const cbEthContract = await this.hre.ethers.getContractAt(
+      ["function balanceOf(address) external view returns (uint256)"],
+      cbETH
     );
+
+    assert.equal(await cbEthContract.balanceOf(user), 1, "balanceOf1");
 
     await deal(cbETH, user, 2);
 
-    assert.equal(
-      await new Contract(
-        cbETH,
-        ["function balanceOf(address) external view returns (uint256)"],
-        this.hre.ethers.provider
-      ).balanceOf(user),
-      2,
-      "balanceOf2"
-    );
+    assert.equal(await cbEthContract.balanceOf(user), 2, "balanceOf2");
   });
 
   it("Should deal maDAI", async function () {
     await deal(maDai, user, 1);
 
-    assert.equal(
-      await new Contract(
-        maDai,
-        ["function balanceOf(address) external view returns (uint256)"],
-        this.hre.ethers.provider
-      ).balanceOf(user),
-      1,
-      "balanceOf"
+    const maDaiContract = await this.hre.ethers.getContractAt(
+      ["function balanceOf(address) external view returns (uint256)"],
+      maDai
     );
+
+    assert.equal(await maDaiContract.balanceOf(user), 1, "balanceOf");
   });
 
   it("Should deal CRV", async function () {
     await deal(crv, user, 1);
 
-    assert.equal(
-      await new Contract(
-        crv,
-        ["function balanceOf(address) external view returns (uint256)"],
-        this.hre.ethers.provider
-      ).balanceOf(user),
-      1,
-      "balanceOf"
+    const crvContract = await this.hre.ethers.getContractAt(
+      ["function balanceOf(address) external view returns (uint256)"],
+      crv
     );
+
+    assert.equal(await crvContract.balanceOf(user), 1, "balanceOf");
   });
 });
