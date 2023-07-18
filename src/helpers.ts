@@ -8,19 +8,19 @@ import {
   Interface,
   getAddress,
   keccak256,
-  stripZerosLeft,
   toBeHex,
+  toQuantity,
 } from "ethers";
 
 const balanceOfIfc = new Interface(["function balanceOf(address) external view returns (uint256)"]);
 
 const getBalanceOfSlot = (type: StorageLayoutType, slot: number, recipient: string) => {
   if (type === StorageLayoutType.VYPER)
-    return stripZerosLeft(
+    return toQuantity(
       keccak256(AbiCoder.defaultAbiCoder().encode(["uint256", "address"], [slot, recipient]))
     );
 
-  return stripZerosLeft(
+  return toQuantity(
     keccak256(AbiCoder.defaultAbiCoder().encode(["address", "uint256"], [recipient, slot]))
   );
 };
