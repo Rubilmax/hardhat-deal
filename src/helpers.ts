@@ -4,9 +4,9 @@ import { getCachePath, saveCache } from "./cache";
 import { StorageLayoutType } from "./types";
 import {
   AbiCoder,
+  AddressLike,
   BigNumberish,
   Interface,
-  getAddress,
   keccak256,
   toBeHex,
   toQuantity,
@@ -25,9 +25,16 @@ const getBalanceOfSlot = (type: StorageLayoutType, slot: number, recipient: stri
   );
 };
 
+const getAddress = async (address: AddressLike) => {
+  const awaited = await address;
+  if (typeof awaited === "string") return awaited.toLowerCase();
+
+  return await awaited.getAddress();
+};
+
 export const deal = async (
-  erc20: string,
-  recipient: string,
+  erc20: AddressLike,
+  recipient: AddressLike,
   amount: BigNumberish,
   maxSlot = 256,
   hre?: HardhatRuntimeEnvironment
@@ -35,8 +42,10 @@ export const deal = async (
   if (!hre) hre = require("hardhat");
   if (!hre) throw Error("Could not instanciate Hardhat Runtime Environment");
 
-  erc20 = erc20.toLowerCase();
-  recipient = getAddress(recipient);
+  const [erc20Address, recipientAddress] = await Promise.all([
+    getAddress(erc20),
+    getAddress(recipient),
+  ]);
   const hexAmount = toBeHex(amount, 32);
 
   const balanceOfCall = [
@@ -46,7 +55,7 @@ export const deal = async (
     },
   ];
 
-  const configDealSlot = hre.config.dealSlots[erc20];
+  const configDealSlot = hre.config.dealSlots[erc20Address];
   const cached = configDealSlot != null;
 
   let dealSlot =
@@ -55,7 +64,7 @@ export const deal = async (
       : { type: StorageLayoutType.SOLIDITY, slot: configDealSlot ?? 0 };
 
   const trySlot = async () => {
-    let balanceOfSlot = getBalanceOfSlot(dealSlot.type, dealSlot.slot, recipient);
+    let balanceOfSlot = getBalanceOfSlot(dealSlot.type, dealSlot.slot, recipientAddress);
 
     const storageBefore = !cached
       ? await hre!.network.provider.send("eth_getStorageAt", [erc20, balanceOfSlot])
@@ -103,7 +112,7 @@ export const deal = async (
 
   if (cached) return;
 
-  hre.config.dealSlots[erc20] = dealSlot;
+  hre.config.dealSlots[erc20Address] = dealSlot;
 
   saveCache(getCachePath(hre.config.paths.cache), hre.config.dealSlots);
 };
