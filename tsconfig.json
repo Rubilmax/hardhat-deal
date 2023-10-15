@@ -8,7 +8,7 @@
     "outDir": "dist",
     "rootDir": ".",
     "baseUrl": ".",
-    "moduleResolution": "nodenext",
+    "moduleResolution": "node",
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
