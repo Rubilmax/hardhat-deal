@@ -1,6 +1,6 @@
 {
   "name": "hardhat-deal",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "description": "🎩🪄 Easily deal any amount of any ERC20 tokens to any account on the hardhat network",
   "repository": {
     "type": "git",
@@ -12,9 +12,9 @@
     "email": "rmilon@gmail.com",
     "url": "https://github.com/rubilmax"
   },
-  "main": "dist/index.js",
+  "main": "lib/index.js",
   "files": [
-    "dist/*"
+    "lib"
   ],
   "keywords": [
     "ethereum",
