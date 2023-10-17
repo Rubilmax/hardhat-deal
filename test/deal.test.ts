@@ -40,6 +40,28 @@ describe("Integration tests examples", function () {
     assert.equal(await usdcContract.balanceOf(user), 1, "balanceOf");
   });
 
+  it("Should deal USDC using a contract", async function () {
+    const usdcContract = await this.hre.ethers.getContractAt(
+      ["function balanceOf(address) external view returns (uint256)"],
+      usdc
+    );
+
+    await deal(usdcContract, user, 1);
+
+    assert.equal(await usdcContract.balanceOf(user), 1, "balanceOf");
+  });
+
+  it("Should deal USDC to recipient using a contract", async function () {
+    const usdcContract = await this.hre.ethers.getContractAt(
+      ["function balanceOf(address) external view returns (uint256)"],
+      usdc
+    );
+
+    await deal(usdc, usdcContract, 1);
+
+    assert.equal(await usdcContract.balanceOf(usdcContract), 1, "balanceOf");
+  });
+
   it("Should deal cbETH & re-use cache", async function () {
     await deal(cbETH, user, 1);
 

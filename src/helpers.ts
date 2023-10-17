@@ -29,7 +29,7 @@ const getAddress = async (address: AddressLike) => {
   const awaited = await address;
   if (typeof awaited === "string") return awaited.toLowerCase();
 
-  return await awaited.getAddress();
+  return awaited.getAddress();
 };
 
 export const deal = async (
@@ -50,8 +50,8 @@ export const deal = async (
 
   const balanceOfCall = [
     {
-      to: erc20,
-      data: balanceOfIfc.encodeFunctionData("balanceOf", [recipient]),
+      to: erc20Address,
+      data: balanceOfIfc.encodeFunctionData("balanceOf", [recipientAddress]),
     },
   ];
 
@@ -67,11 +67,11 @@ export const deal = async (
     let balanceOfSlot = getBalanceOfSlot(dealSlot.type, dealSlot.slot, recipientAddress);
 
     const storageBefore = !cached
-      ? await hre!.network.provider.send("eth_getStorageAt", [erc20, balanceOfSlot])
+      ? await hre!.network.provider.send("eth_getStorageAt", [erc20Address, balanceOfSlot])
       : null;
 
     await hre!.network.provider.send(hre!.network.config.rpcEndpoints.setStorageAt, [
-      erc20,
+      erc20Address,
       balanceOfSlot,
       hexAmount,
     ]);
@@ -83,7 +83,7 @@ export const deal = async (
     if (balance === hexAmount) return true;
 
     await hre!.network.provider.send(hre!.network.config.rpcEndpoints.setStorageAt, [
-      erc20,
+      erc20Address,
       balanceOfSlot,
       storageBefore,
     ]);
@@ -108,7 +108,7 @@ export const deal = async (
     success = await trySlot();
   }
 
-  if (!success) throw Error(`Could not brute-force storage slot for ERC20 at: ${erc20}`);
+  if (!success) throw Error(`Could not brute-force storage slot for ERC20 at: ${erc20Address}`);
 
   if (cached) return;
 
