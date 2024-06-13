@@ -100,6 +100,10 @@ export const deal = async (
     return { type: StorageLayoutType.SOLIDITY, slot: slot + 1 };
   };
 
+  // Hotfix: warm up EDR account storage
+  // https://github.com/NomicFoundation/edr/issues/503#issuecomment-2165233608
+  await hre!.network.provider.send("eth_getCode", [erc20Address]);
+
   let success = await trySlot();
 
   while (!success && dealSlot.slot <= maxSlot) {
