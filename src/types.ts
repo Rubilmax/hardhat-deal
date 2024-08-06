@@ -32,14 +32,14 @@ declare module "hardhat/types/config" {
   }
 
   export interface HardhatNetworkConfig {
-    rpcEndpoints: {
+    rpcEndpoints?: Partial<{
       setStorageAt: "hardhat_setStorageAt";
-    };
+    }>;
   }
 
   export interface HttpNetworkConfig {
-    rpcEndpoints: {
+    rpcEndpoints?: Partial<{
       setStorageAt: string;
-    };
+    }>;
   }
 }

@@ -70,11 +70,10 @@ export const deal = async (
       ? await hre!.network.provider.send("eth_getStorageAt", [erc20Address, balanceOfSlot])
       : null;
 
-    await hre!.network.provider.send(hre!.network.config.rpcEndpoints.setStorageAt, [
-      erc20Address,
-      balanceOfSlot,
-      hexAmount,
-    ]);
+    await hre!.network.provider.send(
+      hre!.network.config.rpcEndpoints?.setStorageAt ?? "hardhat_setStorageAt",
+      [erc20Address, balanceOfSlot, hexAmount]
+    );
 
     if (cached) return true;
 
@@ -82,11 +81,10 @@ export const deal = async (
 
     if (balance === hexAmount) return true;
 
-    await hre!.network.provider.send(hre!.network.config.rpcEndpoints.setStorageAt, [
-      erc20Address,
-      balanceOfSlot,
-      storageBefore,
-    ]);
+    await hre!.network.provider.send(
+      hre!.network.config.rpcEndpoints?.setStorageAt ?? "hardhat_setStorageAt",
+      [erc20Address, balanceOfSlot, storageBefore]
+    );
 
     return false;
   };

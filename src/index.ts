@@ -35,8 +35,8 @@ extendConfig((config: HardhatConfig, userConfig: Readonly<HardhatUserConfig>) =>
 
     (config.networks[networkName] as HttpNetworkConfig).rpcEndpoints = Object.assign(
       {},
-      rpcEndpoints,
-      defaultRpcEndpoints
+      defaultRpcEndpoints,
+      rpcEndpoints
     );
   }
 });
